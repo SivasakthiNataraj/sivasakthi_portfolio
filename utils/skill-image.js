@@ -67,6 +67,7 @@ import tailwind from '../app/assets/svg/skills/tailwind.svg';
 import tensorflow from '../app/assets/svg/skills/tensorflow.svg';
 import typescript from '../app/assets/svg/skills/typescript.svg';
 import unity from '../app/assets/svg/skills/unity.svg';
+import unreal from '../app/assets/svg/skills/unreal.svg';
 import vitejs from '../app/assets/svg/skills/vitejs.svg';
 import vue from '../app/assets/svg/skills/vue.svg';
 import vuetifyjs from '../app/assets/svg/skills/vuetifyjs.svg';
@@ -234,6 +235,8 @@ export const skillsImage = (skill) => {
       return sketch;
     case 'unity':
       return unity;
+    case 'unreal':
+      return unreal;
     case 'wolframalpha':
       return wolframalpha;
     case 'canva':
