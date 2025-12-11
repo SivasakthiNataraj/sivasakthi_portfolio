@@ -12,7 +12,7 @@ import { SiYoutube } from 'react-icons/si';
 
 function ContactSection() {
   return (
-    <div id="contact" className="my-12 lg:my-16 relative mt-24 text-white">
+    <div id="contact" className="my-12 lg:my-16 relative mt-24 text-white w-full h-full flex items-center justify-center mx-auto">
       <div className="hidden lg:flex flex-col items-center absolute top-24 -right-8">
         <span className="bg-[#1a1443] w-fit text-white rotate-90 p-2 px-5 text-xl rounded-md">
           Contact
