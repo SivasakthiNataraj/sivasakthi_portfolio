@@ -2,6 +2,23 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+    opacity: 0;
+  }
+
+  50% {
+    transform: translateX(100%) rotate(45deg);
+    opacity: 0.4;
+  }
+
+  100% {
+    transform: translateX(200%) rotate(45deg);
+    opacity: 0;
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -118,6 +135,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
