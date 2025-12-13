@@ -153,19 +153,17 @@ export default function HeroXR() {
           transition={{ duration: 1 }}
           className="relative"
         >
-          <div className="absolute inset-0 -z-10 rounded-full bg-[#00E5FF] blur-3xl opacity-30" />
-          <Image
-            src="/hero-portrait.png" // replace with your image path
-            alt="XR Developer Portrait"
-            width={800}
-            height={1100}
-            sizes="(max-width: 768px) 320px,
-         (max-width: 1024px) 520px,
-         620px"
-            className="object-contain w-[320px] md:w-[520px] lg:w-[915px]"
-            quality={100}
-            priority
-          />
+          <div className="relative w-[320px] md:w-[520px] lg:w-[910px] aspect-[8/8]"/>
+            <Image
+              src="/hero-portrait.png"
+              alt="XR Developer Portrait"
+              fill
+              priority
+              sizes="(max-width: 768px) 320px,
+           (max-width: 1024px) 520px,
+           915px"
+              className="object-contain"
+            />
         </motion.div>
       </div>
 
