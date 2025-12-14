@@ -34,7 +34,8 @@ export default function SocialBar() {
                             target="_blank"
                             className="text-[#F2F6FF] text-2xl hover:text-[#00E5FF] transition-colors"
                             variants={item}
-                            whileHover={{ scale: 1.2 }}
+                            style={{ opacity: 0.6 }}
+                            whileHover={{ opacity: 1, scale: 1.2 }}
                             transition={{ type: "spring", stiffness: 300, damping: 20 }}
                         >
                             {itemData.icon}
@@ -43,14 +44,14 @@ export default function SocialBar() {
                         {/* Line between icons except last */}
                         {idx < socialItems.length - 1 && (
                             <motion.div
-                                className="w-px h-4 bg-[#00E5FF]/40 mt-4 mb-4"
+                                className="w-px h-15 bg-[#00E5FF]/40 mt-4 mb-4"
                                 variants={item} // Animate line with icon
                             />
                         )}
                     </motion.div>
                 ))}
 
-               
+
             </motion.div>
         </div>
     );

@@ -160,29 +160,39 @@ export default function HeroXR() {
 
       </div>
 
-      <div className="relative z-10 flex min-h-screen items-center justify-center">
+      {/* ================= CENTER IMAGE ================= */}
+      <div className="relative z-10 flex min-h-screen items-end justify-center">
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 1 }}
-          className="relative"
+          className="
+      relative
+      w-full
+      h-[70svh]        /* MOBILE fills screen */
+      sm:h-[75vh]
+      md:h-[69vh]
+      lg:h-[95vh]
+      overflow-hidden
+    "
         >
-          <div className="relative w-[320px] md:w-[520px] lg:w-[910px] aspect-[8/8]" />
           <Image
             src="/hero-portrait.png"
             alt="XR Developer Portrait"
             fill
             priority
-            sizes="(max-width: 768px) 320px,
-           (max-width: 1024px) 520px,
-           915px"
-            className="object-contain "
-            
+            sizes="100vw"
+            className="
+        object-cover
+        object-top     /* keeps face visible */
+        sm:object-contain
+      "
           />
         </motion.div>
       </div>
 
-      
+
+
 
     </div>
   );
