@@ -102,7 +102,7 @@ export default function ProjectsPage() {
                     transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                     className="
             relative z-10
-            mx-auto max-w-5xl
+            mx-auto max-w-6xl
             rounded-2xl
             border border-[#00E5FF]/20
             bg-white/5
@@ -112,7 +112,7 @@ export default function ProjectsPage() {
           "
                 >
                     {/* IMAGE */}
-                    <div className="relative h-56 sm:h-72 w-full">
+                    <div className="relative h-56 sm:h-150 w-full">
                         <Image
                             src={project.image}
                             alt={project.title}

@@ -1,61 +1,69 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import Navbar from './Navbar';
-import SocialBar from './SocialBar';
+import Navbar from "./Navbar";
+import SocialBar from "./SocialBar";
 
-
-// In your _app.js or page component, import the font
+// Font
 import { Poppins } from "next/font/google";
-
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"]
+  weight: ["400", "500", "600", "700", "800"],
 });
 
-const nameLines = ["SIVASAKTHI", "NATARAJ"];
-
-const nameContainer = {
+const wordVariants = {
   hidden: {},
-  show: {
+  visible: {
     transition: {
-      staggerChildren: 0.06, // delay per character
+      staggerChildren: 0.06,
     },
   },
 };
 
-const nameChar = {
-  hidden: { y: -160, opacity: 0 },
-  show: {
+const letterVariants = {
+  hidden: {
+    y: -120,
+    opacity: 0,
+  },
+  visible: {
     y: 0,
     opacity: 1,
     transition: {
-      type: "spring",
-      stiffness: 130,
-      damping: 14,
+      ease: "easeOut",
+      duration: 0.6,
     },
   },
 };
 
+
+function useViewport() {
+  const [size, setSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const update = () =>
+      setSize({ width: window.innerWidth, height: window.innerHeight });
+
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  return size;
+}
+
+
 function useResponsiveStroke() {
-  const [stroke, setStroke] = useState("2.5px #A9C4FF");
+  const [stroke, setStroke] = useState(2);
 
   useEffect(() => {
     const updateStroke = () => {
-      const width = window.innerWidth;
-
-      if (width < 480) {
-        setStroke("1px #A9C4FF");      // small mobile
-      } else if (width < 768) {
-        setStroke("1.5px #A9C4FF");    // large mobile / tablet
-      } else {
-        setStroke("2.5px #A9C4FF");    // desktop
-      }
+      const w = window.innerWidth;
+      if (w < 480) setStroke(1);
+      else if (w < 768) setStroke(1.5);
+      else setStroke(2);
     };
-
     updateStroke();
     window.addEventListener("resize", updateStroke);
     return () => window.removeEventListener("resize", updateStroke);
@@ -64,117 +72,152 @@ function useResponsiveStroke() {
   return stroke;
 }
 
-const navContainer = {
-  hidden: {},
-  show: {
-    transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.4,
-    },
-  },
-};
-
-const navItem = {
-  hidden: { opacity: 0, x: 30 },
-  show: {
-    opacity: 1,
-    x: 0,
-    transition: {
-      duration: 0.6,
-      ease: [0.22, 1, 0.36, 1],
-    },
-  },
-};
-
-
 export default function HeroXR() {
-  const textStroke = useResponsiveStroke();
+  const strokeWidth = useResponsiveStroke();
+  const texts = ["SIVASAKTHI", "NATARAJ"];
+
+  const { width, height } = useViewport();
+
+  // prevent SSR crash
+  if (!width || !height) return null;
+
+  const centerX = width / 2;
+  const centerY = height / 2;
+
+
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-[#1E2A44] via-[#2F5EFF] to-[#7B61FF]">
-      {/* NAVBAR */}
-      {/* NAVBAR */}
-
       <Navbar />
       <SocialBar />
 
-      {/* SCROLLING OUTLINE NAME */}
-      <motion.div
-        className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center overflow-hidden px-4"
-      >
-        {nameLines.map((line, lineIndex) => (
-          <motion.h1
-            key={lineIndex}
-            variants={nameContainer}
-            initial="hidden"
-            animate="show"
-            className={`
-        flex justify-center
-        font-extrabold uppercase
-        text-transparent opacity-60
-        tracking-[0.15em]
-        max-w-full
-        ${lineIndex === 0
-                ? "mb-6 sm:mb-8 md:mb-10"
-                : ""
-              }
-      `}
-            style={{
-              WebkitTextStroke: textStroke,
-              fontSize: "clamp(3rem, 12vw, 15rem)", // 🔑 mobile-safe scaling
-              lineHeight: 1,
-            }}
-          >
-            {line.split("").map((char, charIndex) => (
-              <motion.span
-                key={charIndex}
-                variants={nameChar}
-                className="inline-block"
-              >
-                {char}
-              </motion.span>
-            ))}
-          </motion.h1>
-        ))}
-      </motion.div>
+      {/* ===== SVG HERO LAYER ===== */}
+      <div className="absolute inset-0 z-10 flex items-center justify-center">
+        <svg
+          width="100%"
+          height="100%"
+          viewBox={`0 0 ${width} ${height}`}
+          preserveAspectRatio="xMidYMid meet"
+        >
+          <defs>
+            <mask id="inverseMask">
+              <rect width="100%" height="100%" fill="white" />
+              <g>
+                <animateTransform
+                  attributeName="transform"
+                  type="rotate"
+                  from={`0 ${centerX} ${centerY}`}
+                  to={`360 ${centerX} ${centerY}`}
+                  dur="25s"
+                  repeatCount="indefinite"
+                />
+                <rect width="100%" height="100%" rx="24" fill="black" />
+              </g>
+            </mask>
+          </defs>
+
+          {/* ===== OUTLINE BACKGROUND TEXT ===== */}
+          {texts.map((word, index) => (
+            <text
+              key={`outline-${word}`}
+              x="50%"
+              y={index === 0 ? "42%" : "72%"}
+              textAnchor="middle"
+              dominantBaseline="middle"
+              fill="transparent"
+              stroke="#A9C4FF"
+              strokeWidth={strokeWidth}
+              fontSize="14.6vw"
+              fontWeight="800"
+              opacity="0.35"
+            >
+              {word.split("").map((char, i) => (
+                <motion.tspan
+                  key={i}
+                  initial={{ opacity: 0, dy: -220 }}
+                  animate={{ opacity: 1, dy: 0 }}
+                  transition={{
+                    type: "spring",
+                    damping: 12,
+                    stiffness: 120,
+                    delay: index * 0.4 + i * 0.08,
+                    duration: 0.6,
+                    ease: "easeOut",
+                  }}
+                  dx={i === 0 ? "0" : "0.02em"}
+                >
+                  {char}
+                </motion.tspan>
+              ))}
+            </text>
+          ))}
 
 
-      {/* CENTER IMAGE */}
-      {/* ANIMATED SHAPES BACKDROP */}
-      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        <motion.div
-          animate={{ y: [0, -30, 0], x: [0, 20, 0], rotate: [0, 20, 0] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/4 left-1/4 h-40 w-40 rounded-full bg-[#00E5FF]/20 blur-2xl"
-        />
-        <motion.div
-          animate={{ y: [0, 40, 0], x: [0, -30, 0], rotate: [0, -15, 0] }}
-          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-1/4 right-1/4 h-52 w-52 rounded-full bg-[#7B61FF]/20 blur-3xl"
-        />
-        <motion.div
-          animate={{ scale: [1, 1.2, 1], rotate: [0, 360] }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="relative min-h-screen items-center justify-center border border-[#A9C4FF]/70"
 
-        />
+          {/* ===== FILLED TEXT (MASKED) ===== */}
+          {texts.map((word, index) => (
+            <text
+              key={`fill-${word}`}
+              x="50%"
+              y={index === 0 ? "42%" : "72%"}
+              textAnchor="middle"
+              dominantBaseline="middle"
+              fill="#A9C4FF"
+              mask="url(#inverseMask)"
+              fontSize="14.6vw"
+              fontWeight="800"
+            >
+              {word.split("").map((char, i) => (
+                <motion.tspan
+                  key={i}
+                  initial={{ opacity: 0, dy: -220 }}
+                  animate={{ opacity: 1, dy: 0 }}
+                  transition={{
+                    type: "spring",
+                    damping: 12,
+                    stiffness: 120,
+                    delay: index * 0.4 + i * 0.08,
+                    duration: 0.6,
+                    ease: "easeOut",
+                  }}
+                  dx={i === 0 ? "0" : "0.02em"}
+                >
+                  {char}
+                </motion.tspan>
+              ))}
+            </text>
+          ))}
 
+
+          {/* ===== ROTATING FULLSCREEN BOX ===== */}
+          <g>
+            <animateTransform
+              attributeName="transform"
+              type="rotate"
+              from={`0 ${centerX} ${centerY}`}
+              to={`360 ${centerX} ${centerY}`}
+              dur="25s"
+              repeatCount="indefinite"
+            />
+            <rect
+              width="100%"
+              height="100%"
+              rx="24"
+              fill="none"
+              stroke="#A9C4FF"
+              strokeWidth={strokeWidth}
+              opacity="0.5"
+            />
+          </g>
+        </svg>
       </div>
 
-      {/* ================= CENTER IMAGE ================= */}
-      <div className="relative z-10 flex min-h-screen items-end justify-center">
+      {/* ===== PORTRAIT ===== */}
+      <div className="relative z-20 flex min-h-screen items-end justify-center">
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 1 }}
-          className="
-      relative
-      w-full
-      h-[70svh]        /* MOBILE fills screen */
-      sm:h-[75vh]
-      md:h-[69vh]
-      lg:h-[95vh]
-      overflow-hidden
-    "
+          className="relative w-full h-[70svh] sm:h-[75vh] md:h-[68vh] lg:h-[78vh]"
         >
           <Image
             src="/hero-portrait.png"
@@ -182,18 +225,10 @@ export default function HeroXR() {
             fill
             priority
             sizes="100vw"
-            className="
-        object-cover
-        object-top     /* keeps face visible */
-        sm:object-contain
-      "
+            className="object-cover object-top sm:object-contain"
           />
         </motion.div>
       </div>
-
-
-
-
     </div>
   );
 }
