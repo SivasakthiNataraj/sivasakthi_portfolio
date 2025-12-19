@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail } from "lucide-react";
-import emailjs from "@emailjs/browser";
 
 export default function ContactSection() {
     const [name, setName] = useState("");
@@ -11,12 +10,10 @@ export default function ContactSection() {
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const [showWarning, setShowWarning] = useState(false);
-    const [statusMessage, setStatusMessage] = useState(""); // for send success/fail
+    const [statusMessage, setStatusMessage] = useState("");
 
     const handleSendMessage = async (e) => {
         e.preventDefault();
-
-        // Reset status message
         setStatusMessage("");
 
         // Validation
@@ -24,28 +21,30 @@ export default function ContactSection() {
             setShowWarning(true);
             return;
         }
-
         setShowWarning(false);
         setLoading(true);
 
         try {
-            await emailjs.send(
-                "service_w5lyps9",
-                "template_f8s4rvf",
-                {
-                    from_name: name,
-                    from_email: email,
-                    message: message,
-                },
-                "mJTbx4Tk_pyhpB-Fc"
-            );
+            const res = await fetch("/.netlify/functions/sendEmail", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, email, message }),
+            });
 
-            setStatusMessage("Message sent successfully!");
-            setName("");
-            setEmail("");
-            setMessage("");
+
+            const data = await res.json();
+
+            if (res.ok) {
+                setStatusMessage(data.message);
+                setName("");
+                setEmail("");
+                setMessage("");
+            } else {
+                setStatusMessage(data.error || "Failed to send message.");
+            }
         } catch (error) {
-            console.error("Email sending error:", error);
+            console.error(error);
+
             setStatusMessage("Failed to send message. Please try again.");
         } finally {
             setLoading(false);
@@ -61,9 +60,7 @@ export default function ContactSection() {
                     {/* Status message */}
                     {statusMessage && (
                         <p
-                            className={`mt-2 text-sm font-semibold ${statusMessage.includes("Failed")
-                                ? "text-red-500"
-                                : "text-green-500"
+                            className={`mt-2 text-sm font-semibold ${statusMessage.includes("Failed") ? "text-red-500" : "text-green-500"
                                 }`}
                         >
                             {statusMessage}
@@ -78,9 +75,7 @@ export default function ContactSection() {
                             onChange={(e) => setName(e.target.value)}
                         />
                         {showWarning && !name.trim() && (
-                            <p className="mt-1 text-sm font-semibold text-red-500">
-                                Please fill in your name.
-                            </p>
+                            <p className="mt-1 text-sm font-semibold text-red-500">Please fill in your name.</p>
                         )}
                     </div>
 
@@ -92,9 +87,7 @@ export default function ContactSection() {
                             onChange={(e) => setEmail(e.target.value)}
                         />
                         {showWarning && !email.trim() && (
-                            <p className="mt-1 text-sm font-semibold text-red-500">
-                                Please fill in your email.
-                            </p>
+                            <p className="mt-1 text-sm font-semibold text-red-500">Please fill in your email.</p>
                         )}
                     </div>
 
@@ -120,22 +113,20 @@ export default function ContactSection() {
                         whileTap={{ scale: 0.95 }}
                         disabled={loading}
                         className="
-                            flex items-center gap-2
-                            rounded-full
-                            border border-[#A9C4FF]/40
-                            bg-white/10 backdrop-blur-xl
-                            px-4 py-2
-                            text-[#C7D2FF]
-                            shadow-lg
-                            hover:bg-white/20
-                            transition-colors
-                            disabled:opacity-50 disabled:cursor-not-allowed
-                        "
+              flex items-center gap-2
+              rounded-full
+              border border-[#A9C4FF]/40
+              bg-white/10 backdrop-blur-xl
+              px-4 py-2
+              text-[#C7D2FF]
+              shadow-lg
+              hover:bg-white/20
+              transition-colors
+              disabled:opacity-50 disabled:cursor-not-allowed
+            "
                     >
                         <Mail size={16} className="sm:size-[20px]" />
-                        <span className="text-sm tracking-wide">
-                            {loading ? "Sending..." : "Send Message"}
-                        </span>
+                        <span className="text-sm tracking-wide">{loading ? "Sending..." : "Send Message"}</span>
                     </motion.button>
                 </div>
 
