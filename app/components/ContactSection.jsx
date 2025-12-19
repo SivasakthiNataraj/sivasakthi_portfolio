@@ -37,7 +37,7 @@ export default function ContactSection() {
                     from_email: email,
                     message: message,
                 },
-                "YOUR_PUBLIC_KEY"
+                "mJTbx4Tk_pyhpB-Fc"
             );
 
             setStatusMessage("Message sent successfully!");
@@ -62,8 +62,8 @@ export default function ContactSection() {
                     {statusMessage && (
                         <p
                             className={`mt-2 text-sm font-semibold ${statusMessage.includes("Failed")
-                                    ? "text-red-500"
-                                    : "text-green-500"
+                                ? "text-red-500"
+                                : "text-green-500"
                                 }`}
                         >
                             {statusMessage}
