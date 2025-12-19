@@ -36,10 +36,21 @@ function useResponsiveStroke() {
     return stroke;
 }
 
+/* ---------------- FALLING LETTERS VARIANTS ---------------- */
+const wordVariants = {
+    hidden: {},
+    visible: { transition: { staggerChildren: 0.05 } },
+};
+
+const letterVariants = {
+    hidden: { y: -100, opacity: 0 },
+    visible: { y: 0, opacity: 0.5, transition: { type: "spring", damping: 12, stiffness: 120 } },
+};
+
 export default function ProjectsSection() {
     const [filter, setFilter] = useState("All");
     const [showScroll, setShowScroll] = useState(true);
-    const textStroke = useResponsiveStroke();
+    // const textStroke = useResponsiveStroke();
 
     // Ensure page scrolls to top on load/reload
     useEffect(() => {
@@ -58,28 +69,34 @@ export default function ProjectsSection() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
+    const textStroke = "1.5px #A9C4FF"; // or use your responsive hook
+
+    const heading = "PROJECTS".split(""); // split into letters
+
     return (
         <section className={`${poppins.className} relative w-full py-20 sm:py-28`}>
             {/* HEADER */}
+            {/* ===== FALLING LETTERS HEADING ===== */}
             <motion.div
                 initial="hidden"
-                whileInView="show"
-                viewport={{ once: true }}
-                className="relative z-10 mx-auto max-w-7xl px-2 sm:px-0 text-center  mb-4 sm:mb-8"
+                animate="visible"
+                className="relative z-10 mx-auto max-w-7xl px-2 sm:px-0 text-center mt-2 sm:mt-6 flex justify-center flex-wrap"
+                variants={wordVariants}
             >
-                <motion.h2
-                    className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-[0.25em] text-transparent opacity-80"
-                    style={{ WebkitTextStroke: textStroke }}
-                >
-                    PROJECTS
-                </motion.h2>
-                {/* <motion.p className="mt-4 text-base sm:text-lg text-[#C7D2FF]">
-                    Selected immersive works blending design & performance
-                </motion.p> */}
+                {heading.map((letter, index) => (
+                    <motion.span
+                        key={index}
+                        variants={letterVariants}
+                        className="text-6xl sm:text-8xl md:text-9xl font-bold tracking-[0.25em] text-transparent opacity-80"
+                        style={{ WebkitTextStroke: textStroke }}
+                    >
+                        {letter}
+                    </motion.span>
+                ))}
             </motion.div>
 
             {/* TABS */}
-            <div className="relative flex justify-center mb-15 flex-wrap gap-6 z-10">
+            <div className="relative flex justify-center mb-15 mt-2 sm:mt-6 flex-wrap gap-6 z-10">
                 {tags.map((t) => (
                     <motion.button
                         key={t}
