@@ -7,7 +7,7 @@ export const projects = [
         tag: "VR",
         techStack: ["Unity", "C#"],
         desc: "High-performance VR training with realistic interaction systems.",
-        image: "/projects/xr-training.png",
+        image: "/projects/xr-training.jpg",
     },
     {
         title: "WebXR Product Showcase",

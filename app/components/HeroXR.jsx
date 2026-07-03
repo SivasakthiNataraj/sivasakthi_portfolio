@@ -37,7 +37,7 @@ const letterVariants = {
   },
 };
 
-
+// 1. Hook for viewport
 function useViewport() {
   const [size, setSize] = useState({ width: 0, height: 0 });
 
@@ -53,17 +53,23 @@ function useViewport() {
   return size;
 }
 
-
+// 2. Updated Stroke Hook (Now scales for TVs and large monitors)
+// Updated Stroke Hook (Thinner, more elegant scaling)
 function useResponsiveStroke() {
-  const [stroke, setStroke] = useState(2);
+  const [stroke, setStroke] = useState(1.5);
 
   useEffect(() => {
     const updateStroke = () => {
       const w = window.innerWidth;
-      if (w < 480) setStroke(1);
-      else if (w < 768) setStroke(1.5);
-      else setStroke(2);
+      // Drastically reduced values for a crisper, "thinner" look
+      if (w < 480) setStroke(0.75);       // Mobile: Very fine line
+      else if (w < 768) setStroke(1);     // Tablet: Standard thin
+      else if (w < 1280) setStroke(1.25); // Laptop: Clean and crisp
+      else if (w < 1920) setStroke(1.75); // Desktop: Slightly thicker to remain visible
+      else if (w < 2560) setStroke(2.5);  // Ultra-wide: Elegant scaling
+      else setStroke(3);                  // 4K TVs+: Capped so it doesn't get bulky
     };
+
     updateStroke();
     window.addEventListener("resize", updateStroke);
     return () => window.removeEventListener("resize", updateStroke);
@@ -84,6 +90,8 @@ export default function HeroXR() {
   const centerX = width / 2;
   const centerY = height / 2;
 
+  // 3. Dynamic Border Radius (Looks proportionate on all screens)
+  const dynamicRadius = Math.max(16, width * 0.015);
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-[#1E2A44] via-[#2F5EFF] to-[#7B61FF]">
@@ -107,10 +115,10 @@ export default function HeroXR() {
                   type="rotate"
                   from={`0 ${centerX} ${centerY}`}
                   to={`360 ${centerX} ${centerY}`}
-                  dur="25s"
+                  dur="35s" // Slightly slowed down to prevent dizziness on massive TV screens
                   repeatCount="indefinite"
                 />
-                <rect width="100%" height="100%" rx="24" fill="black" />
+                <rect width="100%" height="100%" rx={dynamicRadius} fill="black" />
               </g>
             </mask>
           </defs>
@@ -126,9 +134,11 @@ export default function HeroXR() {
               fill="transparent"
               stroke="#A9C4FF"
               strokeWidth={strokeWidth}
-              fontSize="14.6vw"
+              // Used clamp to ensure it stops growing aggressively on giant TVs
+              fontSize="clamp(3rem, 14.6vw, 22rem)"
               fontWeight="800"
               opacity="0.35"
+              className={poppins.className}
             >
               {word.split("").map((char, i) => (
                 <motion.tspan
@@ -150,8 +160,6 @@ export default function HeroXR() {
               ))}
             </text>
           ))}
-
-
 
           {/* ===== FILLED TEXT (MASKED) ===== */}
           {texts.map((word, index) => (
@@ -163,8 +171,9 @@ export default function HeroXR() {
               dominantBaseline="middle"
               fill="#A9C4FF"
               mask="url(#inverseMask)"
-              fontSize="14.6vw"
+              fontSize="clamp(3rem, 14.6vw, 22rem)"
               fontWeight="800"
+              className={poppins.className}
             >
               {word.split("").map((char, i) => (
                 <motion.tspan
@@ -187,7 +196,6 @@ export default function HeroXR() {
             </text>
           ))}
 
-
           {/* ===== ROTATING FULLSCREEN BOX ===== */}
           <g>
             <animateTransform
@@ -195,13 +203,13 @@ export default function HeroXR() {
               type="rotate"
               from={`0 ${centerX} ${centerY}`}
               to={`360 ${centerX} ${centerY}`}
-              dur="25s"
+              dur="35s"
               repeatCount="indefinite"
             />
             <rect
               width="100%"
               height="100%"
-              rx="24"
+              rx={dynamicRadius}
               fill="none"
               stroke="#A9C4FF"
               strokeWidth={strokeWidth}
@@ -212,20 +220,21 @@ export default function HeroXR() {
       </div>
 
       {/* ===== PORTRAIT ===== */}
-      <div className="relative z-20 flex min-h-screen items-end justify-center">
+      <div className="relative z-20 flex min-h-screen items-end justify-center pointer-events-none">
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 1 }}
-          className="relative w-full h-[70svh] sm:h-[75vh] md:h-[68vh] lg:h-[78vh]"
+          // Added XL, 2XL, and max-height constraints for TVs
+          className="relative w-full h-[70svh] sm:h-[75vh] md:h-[68vh] lg:h-[78vh] xl:h-[82vh] 2xl:h-[88vh] max-h-[1400px]"
         >
           <Image
             src="/hero-portrait.png"
             alt="XR Developer Portrait"
             fill
             priority
-            sizes="100vw"
-            className="object-cover object-top sm:object-contain"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
+            className="object-cover object-top sm:object-contain drop-shadow-2xl"
           />
         </motion.div>
       </div>
