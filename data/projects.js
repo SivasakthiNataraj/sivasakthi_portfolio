@@ -18,12 +18,12 @@ export const projects = [
         image: "/projects/webxr.png",
     },
     {
-        title: "AR Interior Preview",
-        slug: "ar-interior-preview",
-        tag: "AR",
-        techStack: ["Unity", "AR Foundation"],
-        desc: "Real-time AR furniture placement with scale accuracy.",
-        image: "/projects/ar-interior.png",
+        title: "VR Interior Preview",
+        slug: "vr-interior-preview",
+        tag: "VR",
+        techStack: ["Unity", "VR Foundation"],
+        desc: "Real-time VR furniture placement with scale accuracy.",
+        image: "/projects/vr-interior.png",
     },
     {
         title: "XR Game Prototype",
