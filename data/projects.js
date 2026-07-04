@@ -2,8 +2,8 @@
 
 export const projects = [
     {
-        title: "XR Training Simulator",
-        slug: "xr-training-simulator",
+        title: "VR Production Trainer",
+        slug: "vr-production-trainer",
         tag: "VR",
         techStack: ["Unity", "C#"],
         desc: "High-performance VR training with realistic interaction systems.",
